@@ -1,21 +1,24 @@
 from django.conf.urls.defaults import *
+import settings
+from accounts.views import *
 
 handler500 = 'djangotoolbox.errorviews.server_error'
 
-from app.views import home, done, logout, error
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # ('^_ah/warmup$', 'djangoappengine.views.warmup'),
-    # ('^$', 'django.views.generic.simple.direct_to_template',
-    #  {'template': 'home.html'}),
-
     url(r'^$', home, name='home'),
-    url(r'^done/$', done, name='done'),
-    url(r'^error/$', error, name='error'),
-    url(r'^logout/$', logout, name='logout'),
+    url(r'^signin/$', signin, name='signin'),
+    url(r'^signup/$', signup, name='signup'),
+    url(r'^home/$', home, name='home'),
+    url(r'^signout/$', signout, name='signout'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'', include('social_auth.urls')),
-)
+) 
+
+if settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+    )
