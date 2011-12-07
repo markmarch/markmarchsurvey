@@ -21,7 +21,8 @@ INSTALLED_APPS = (
     'autoload',
     'dbindexer',
     'social_auth',
-    'app',
+    'accounts',
+    'survey',
 
     # djangoappengine should come last, so it can override a few manage.py commands
     'djangoappengine',
@@ -30,7 +31,6 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
     # This loads the index definitions, so it has to come first
     'autoload.middleware.AutoloadMiddleware',
-
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -42,6 +42,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.request',
     'django.core.context_processors.media',
+    'django.core.context_processors.static',
     'social_auth.context_processors.social_auth_by_type_backends',
 )
 
@@ -69,6 +70,9 @@ except:
 TEST_RUNNER = 'djangotoolbox.test.CapturingTestSuiteRunner'
 
 ADMIN_MEDIA_PREFIX = '/media/admin/'
+
+MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'static')
+
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'templates'),)
 
 ROOT_URLCONF = 'urls'
