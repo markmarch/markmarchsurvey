@@ -1,14 +1,7 @@
 {% extends "base.html" %}
+{% block nav-home %} <li class="active"><a href="/home/">Home</a></li>{% endblock %}
 {% block content %}
-<div>
-  <h3>Login using:</h3>
-  <ul>
-  {% for name in social_auth.backends.oauth %}
-    <li><a rel="nofollow" href="{% url socialauth_begin name %}">{{ name|title }}</a></li>
-  {% endfor %}
-  {% for name in social_auth.backends.oauth2 %}
-    <li><a rel="nofollow" href="{% url socialauth_begin name %}">{{ name|title }}</a></li>
-  {% endfor %}
-  </ul>
+<div class="content">
+	<h1> Survey </h1>
 </div>
 {% endblock %}
