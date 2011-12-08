@@ -19,3 +19,13 @@ class SignUpForm(forms.Form):
 class SignInForm(forms.Form):
     username = forms.CharField(max_length=25)
     password = forms.CharField(widget=forms.PasswordInput, min_length=6)
+
+
+class UserProfileForm(forms.Form):
+    username = forms.CharField(max_length=25)
+    email = forms.EmailField()
+    last_name = forms.CharField(max_length=25, required=False)
+    first_name = forms.CharField(max_length=25, required=False)
+    twitter = forms.CharField(max_length=25, required=False)
+    github = forms.CharField(max_length=25, required=False)
+    website = forms.URLField(required=False)
