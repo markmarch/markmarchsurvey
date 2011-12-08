@@ -58,7 +58,10 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGIN_REDIRECT_URL = '/'
+# user profile
+AUTH_PROFILE_MODULE = "accounts.UserProfile"
+
+LOGIN_REDIRECT_URL = '/accounts/signin/'
 
 try:
     from local_settings import *
