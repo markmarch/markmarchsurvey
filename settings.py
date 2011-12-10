@@ -46,6 +46,12 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'social_auth.context_processors.social_auth_by_type_backends',
 )
 
+DBINDEXER_BACKENDS = (
+    'dbindexer.backends.BaseResolver',
+    'dbindexer.backends.FKNullFix',
+    'dbindexer.backends.InMemoryJOINResolver',
+)
+
 # Social auth
 SOCIAL_AUTH_ENABLED_BACKENDS = ('google-oauth2', 'twitter', 'facebook', 'github', 'foursquare')
 
