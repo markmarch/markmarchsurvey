@@ -50,14 +50,17 @@ def profile(request):
             user.email = cd['email']
             gravatar = "http://www.gravatar.com/avatar/"+hashlib.md5(user.email.lower()).hexdigest()+"?"
             gravatar += urllib.urlencode({'d': default, 's':str(40)})
-            user.profile.gravatar = gravatar
+            
             user.first_name = cd['first_name']
             user.last_name = cd['last_name']
-            user.profile.website = cd['website']
-            user.profile.twitter = cd['twitter']
-            user.profile.github = cd['github']
+
+            profile = user.get_profile()
+            profile.website = cd['website']
+            profile.twitter = cd['twitter']
+            profile.github = cd['github']
+            profile.gravatar = gravatar
             user.save()
-            user.profile.save()
+            profile.save()
             return render_to_response("accounts/profile.html", 
                 {"form": form, "message": u'Updated success', "gravatar":gravatar}, 
                 context_instance=RequestContext(request))
@@ -97,7 +100,7 @@ def signup(request):
             if user is not None:
                 user = authenticate(username=cd['username'], password=cd['password'])
                 login(request, user)
-                return HttpResponseRedirect("/accounts/edit/")
+                return HttpResponseRedirect("/accounts/profile/")
             else:
                 return HttpResponseRedirect("/accounts/signup/")
     else:
