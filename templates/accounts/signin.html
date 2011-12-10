@@ -12,7 +12,7 @@
             <li class="error"> {{ error }} </li>
         {% endfor %}
     {% endif %}
-    <form id="sign_up_form" name="sign_up" action="/signin/" method="post"  onsubmit="return validateForm()">{% csrf_token %}
+    <form id="sign_up_form" name="sign_up" action="/accounts/signin/" method="post"  onsubmit="return validateForm()">{% csrf_token %}
         <div class="field">
             <label for="id_username">Username:</label>
             {{ form.username}}

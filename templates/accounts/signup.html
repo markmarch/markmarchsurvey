@@ -10,7 +10,7 @@
             <p><strong>Opos...we got a problem!</strong></p>
         </div>
     {% endif %}
-	<form id="sign_up_form" name="sign_up" action="/signup/" method="post"  onsubmit="return validateForm()">{% csrf_token %}
+	<form id="sign_up_form" name="sign_up" action="/accounts/signup/" method="post"  onsubmit="return validateForm()">{% csrf_token %}
 		<div class="field">
             <label for="id_username">Username:</label>
             {{ form.username}}

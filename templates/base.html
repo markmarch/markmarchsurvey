@@ -23,11 +23,15 @@
           <form class="pull-left" action="/search/">
             <input type="text" placeholder="Search">
           </form>
+          {% if user.is_authenticated %}
+          <div class="useravatar">
+            <img src="{{ user.profile.gravatar }}"/>
+          </div>
+          {% endif %}
           <ul class="nav secondary-nav">
             {% if user.is_authenticated %}
             <li class="dropdown" data-dropdown="dropdown">
-              <img src="{{user.profile.gravatar}}" ></img>
-              <a href="#" class="dropdown-toggle">{{ user.username }}</a>
+              <a href="#" class="dropdown-toggle"><strong>{{ user.username }}</strong></a>
               <ul class="dropdown-menu">
                 <li><a href="/accounts/profile/">Account</a></li>
                 <li><a href="/accounts/signout/">Sign out</a></li>
@@ -55,9 +59,7 @@
     </div><!--topbar-->
 
     <div class="container">
-      <div class="title">
-        {% block page_title %} {% endblock %}
-      </div>
+      {% block page_title %} {% endblock %}
       {% block content %}{% endblock %}
       <footer>
         <p>&copy; Markmarch NYU 2011</p>
