@@ -30,3 +30,13 @@ indexes:
   properties:
   - name: __key__
     direction: desc
+
+- kind: survey_poll
+  properties:
+  - name: __key__
+    direction: desc
+
+- kind: survey_survey
+  properties:
+  - name: __key__
+    direction: desc
