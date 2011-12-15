@@ -2,16 +2,21 @@ html, body {
   background-color: #fff;
 }
 
+body, button, input, select, textarea { font-family: sans-serif; color: #222; }
+
 body {
   padding-top: 40px; /* 40px to make the container go all the way to the bottom of the topbar */
 }
+
+::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
+::selection { background: #fe57a1; color: #fff; text-shadow: none; }
+
 .container > footer p {
   text-align: center; /* center align it with the container */
 }
 
 /* The white background content wrapper */
 .content {
-  background-color: #eee;
   padding: 20px;
   margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
   -webkit-border-radius: 0 0 6px 6px;
@@ -20,6 +25,7 @@ body {
   -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
   -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
   box-shadow: 0 1px 2px rgba(0,0,0,.15);
+	min-height: 500px;
 }
 
 .dropdown-menu form input {
@@ -63,7 +69,6 @@ li .error {
 
 .box {
   position: relative;
-  width: 500px;
   padding: 50px;
   margin: 0 auto;
   background-color: #fff;
@@ -116,12 +121,37 @@ li .error {
 }
 
 .content .main{
-  margin-left: 280px;
+  margin-left: 240px;
+}
+
+.main .section {
 }
 
 .content .sidebar {
   float: left;
   width: 220px;
+}
+
+.section-title {
+	background-color: #444;
+	-webkit-border-radius: 5px 5px 0 0;
+	-moz-border-radius: 5px 5px 0 0;
+	border-radius: 5px 5px 0 0;
+	padding: 5px 10px 5px 10px;
+	color: #fe57a1;
+	font-size: 16px;
+	font-style: bold;
+}
+
+.sidebar .survey-list {
+	padding: 5px 10px 5px 10px;
+}
+
+.main .survey-list {
+	padding: 5px 10px 5px 10px;
+}
+.survey {
+	
 }
 
 
