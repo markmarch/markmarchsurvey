@@ -3,24 +3,30 @@
 {% block page_title %} {% endblock %}
 {% block content %}
 <div class="content">
-    {% if user_surveys %}
-    <div class="sidebar">
-        <div> Your Survey</div>
-        {% for survey in user_surveys %}
-        <div class="survey">
-            <a href="/survey/{{survey.pk}}/" class="survey-title"> {{ survey.name }} </a>
-            <p><span> {{ survey.num_of_questions }} </span> questions</p>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    <div class="main">
-        <h1> Recent public survey:</h1>
-        {% for survey in public_surveys %}
-        <div class="survey">
-            <h3>{{survey.name}}</h3>
-        </div>
-        {% endfor %}
-    </div>
+	{% if user_surveys %}
+	<div class="sidebar">
+		<div class="section-title"> Your Survey</div>
+		<div class="survey-list box">
+			{% for survey in user_surveys %}
+			<div class="survey">
+				<a href="/survey/{{survey.pk}}/" class="survey-title"> {{ survey.name }} </a>
+				<p><span> {{ survey.num_of_questions }} </span> questions</p>
+			</div>
+			{% endfor %}
+			<a href="/survey/user/{{user.username}}">See More...</a>
+		</div>
+	</div>
+	{% endif %}
+	<div class="main">
+		<div class="section-title"> Recent public survey:</div>
+		<div class="survey-list section box">
+			{% for survey in public_surveys %}
+			<div class="survey">
+				<a href="/survey/{{survey.pk}}/" class="survey-title"> {{ survey.name }} </a>
+				<p><span> {{ survey.num_of_questions }} </span> questions</p>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
 </div>
 {% endblock %}
