@@ -13,15 +13,6 @@
 			<span>Created On <strong>{{survey.create_date}}</strong></span> by: <img src="{{survey.user.gravatar}}">
 			<a href="/account/{{survey.user.username}}">{{survey.user.username}}</a>
 		</div>
-		<div class="voters">
-			<a href="/surve/{{survey.pk}}/voters/">10 people voted</a>
-		</div>
-		<div>
-			{% if editable %}
-				<a href="/survey/edit/{{survey.pk}}/" class="btn primary">Edit</a>
-				<a href="/survey/delete/{{survey.pk}}/" class="btn danger">Delete</a>
-			{% endif %}
-		</div>
 	</div>
 	<hr>
 	<ul class="tabs" data-tabs="tabs">
@@ -29,11 +20,20 @@
 			<a href="#questions">Questions</a>
 		<li>
 		<li class="">
-			<a href="#records">Records</a>
+			<a href="#results">Results</a>
 		<li>
 		<li class="">
 			<a href="#comments">Comments</a>
 		<li>
+		{% if editable %}
+		<li class="dropdown" data-dropdown="dropdown">
+			<a href="#" class="dropdown-toggle"> Action </a>
+			<ul class="dropdown-menu">
+				<li><a href="/survey/{{survey.pk}}/edit/">Edit</a><li>
+				<li><a href="/survey/{{survey.pk}}/delete/">Delete</a></li>
+			</ul>
+		</li>
+		{% endif %}
 	</ul>
 	<div id="survey-tab-content" class="tab-content">
 		<div class="tab-pane active" id="questions">
@@ -52,8 +52,23 @@
 				</form>
 			</div>
 		</div>
-		<div clas="tab-pane" id="records">
-			<p> Records of this survey </p>
+		<div clas="tab-pane" id="results">
+			<p> Current results:</p>
+			<div class="question">
+				{%for poll in survey.polls %}
+				<h3> {{ poll.question }}</h3>
+				<ul>
+					{% for choice in poll.choices %}
+					<div>
+						<h4>{{choice.choice}}</h4>
+						<div class="vote-count">
+							<span></span><strong> {{choice.votes}}</strong>
+						</div>
+					</div>
+					{% endfor %}
+				</ul>
+				{% endfor %}
+			</div>
 		</div>
 		<div clas="tab-pane" id="comments">
 			{% for c in survey.comments %}
