@@ -29,7 +29,7 @@ class Survey(models.Model):
         return self.user.username==user.username
         
     def can_vote(self, user):
-        if self.visibility == 'public':
+        if self.visibility == 'public' or self.user == user:
             return True
         else:
             # check if user is a friend
@@ -57,7 +57,7 @@ class Choice(models.Model):
     """Choice model"""
     poll = models.ForeignKey(Poll)
     choice = models.CharField(max_length=200)
-    votes = models.IntegerField()
+    votes = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.choice
