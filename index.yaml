@@ -40,3 +40,8 @@ indexes:
   properties:
   - name: __key__
     direction: desc
+
+- kind: survey_vote
+  properties:
+  - name: __key__
+    direction: desc
