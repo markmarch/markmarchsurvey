@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="http://www.facebook.com/2008/fbml">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>Markmarch Survey</title>
     <meta name="description" content="A survey applicaiton developed for open source tools class at NYU" />
@@ -66,14 +66,12 @@
     </div>
     <script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
     <script src="http://autobahn.tablesorter.com/jquery.tablesorter.min.js"></script>
+    <script src="/static/js/bootstrap-alerts.js"></script>
     <script src="/static/js/bootstrap-dropdown.js"></script>
     <script src="/static/js/bootstrap-twipsy.js"></script>
     <script src="/static/js/bootstrap-scrollspy.js"></script>
-    <script type="text/javascript">
-      $('.dropdown input').bind('click', function (e) {
-        e.stopPropagation()
-      })
-    </script>
+    <script src="/static/js/bootstrap-tabs.js"></script>
+    <script src="/static/js/ostsurvey.js"></script>
     {% block script %}
     {% endblock %}
   </body>

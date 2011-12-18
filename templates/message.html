@@ -2,7 +2,7 @@
 {% if messages %}
 <ul class="unstyled messages">
     {% for message in messages %}
-    <li data-alert="1" class="alert-message fade in {% if message.tags %} {{ message.tags }} {% else %} info{% endif %}"><a href="#" class='close'>&times;</a><p>{{message}}</p></li>
+    <li data-alert="1" class="alert-message fade in {% if message.tags %} {{ message.tags }} {% else %} info{% endif %}"data-alert="alert"><a href="#" class='close'>&times;</a><p><strong>{{message}}</strong></p></li>
     {% endfor %}
 </ul>
 {% endif %}
