@@ -15,5 +15,9 @@ class PollInline(admin.StackedInline):
 class SurveyAdmin(admin.ModelAdmin):
     inlines = [PollInline]
 
+class VoteAdmin(admin.ModelAdmin):
+    model = Vote
+
 admin.site.register(Survey, SurveyAdmin)
 admin.site.register(Poll, PollAdmin)
+admin.site.register(Vote, VoteAdmin)
