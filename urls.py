@@ -11,7 +11,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', home, name='home'),
-    url(r'^home/', home, name='home'),
+    url(r'^home/$', home, name='home'),
     url(r'^accounts/signin/$', signin, name='signin'),
     url(r'^accounts/signup/$', signup, name='signup'),
     url(r'^accounts/signout/$', signout, name='signout'),
@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^dashboard/$', dashboard, name='dashboard'),
     url(r'^about/$', about, name='about'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'', include('survey.urls')),
     url(r'', include('social_auth.urls')),
 ) 
 
