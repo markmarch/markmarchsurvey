@@ -27,8 +27,6 @@ class PollForm(forms.Form):
     """Poll Form"""
     survey_id = forms.CharField(initial='', widget=forms.widgets.HiddenInput())
     question = forms.CharField(max_length=100)
-    option_1 = forms.CharField(max_length=100, label='Option 1')
-    option_2 = forms.CharField(max_length=100, label='Option 2')
         
 class CommentForm(forms.Form):
     survey_id = forms.CharField(initial='', widget=forms.widgets.HiddenInput())
