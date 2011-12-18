@@ -47,7 +47,7 @@ def edit(request, survey_id):
         day = survey.expire_date.day
         year = survey.expire_date.year
     if request.method == 'GET':
-        return render_to_response('survey/new.html', 
+        return render_to_response('survey/edit.html', 
             {
             'name': survey.name,
             'desc': survey.desc,
@@ -76,7 +76,7 @@ def edit(request, survey_id):
             else:
                 for k, v in form.errors.items():
                     messages.error(request, v[0])
-                return render_to_response('survey/new.html', 
+                return render_to_response('survey/edit.html', 
                     {
                         'name': survey.name,
                         'desc': survey.desc,
@@ -112,10 +112,10 @@ def new(request):
                 context_instance=RequestContext(request))
         else:
             messages.error(request, "Can't create survey.")
-            return render_to_response('survey/new.html', {"form": form},
+            return render_to_response('survey/edit.html', {"form": form},
                 context_instance=RequestContext(request))
     else:
-        return render_to_response('survey/new.html', {"form": SurveyForm()},
+        return render_to_response('survey/edit.html', {"form": SurveyForm()},
             context_instance=RequestContext(request))
 
                    
@@ -124,9 +124,14 @@ def add_question(request, survey_id):
     """Add a new question to survey"""
     survey = get_object_or_404(Survey, pk=survey_id)
     user = request.user
+    if request.method == 'GET':
+        return render_to_response(
+                'survey/add_question.html',
+                {'survey': survey, 'form': PollForm()},
+                context_instance=RequestContext(request))
     if request.method != 'POST':
-        return HttpResponseRedirect('/home/')
-    
+        raise Http404
+
     if survey.belongs_to(user):
         form = PollForm(request.POST)
         if form.is_valid():
@@ -154,9 +159,18 @@ def add_question(request, survey_id):
         return HttpResponseRedirect('/survey/' + str(survey.pk) + '/')
 
 @login_required(login_url='/accounts/signin/')
-def edit_question(request, survey_id):
+def edit_survey_questions(request, survey_id):
     """Edit questions in a survey"""
-    return HttpResponseRedirect('/home/')
+    survey = get_object_or_404(Survey, pk=survey_id)
+    user = request.user
+    if survey.belongs_to(user):
+        return render_to_response('survey/edit_question.html', 
+            {'survey': survey},
+            context_instance=RequestContext(request))
+    else:
+        messages.error(request, 'Computer say no, because this is not yours')
+        return HttpResponseRedirect('/survey/' + survey_id + '/') 
+
 
 @login_required(login_url='/accounts/signin/')
 def comment(request, survey_id):
@@ -176,7 +190,53 @@ def comment(request, survey_id):
         messages.error(request, "Comment failed")
         return HttpResponseRedirect('/survey/'+survey_id + '/')
 
+ 
+@login_required(login_url='/accounts/signin/')
+def edit_question(request, survey_id, poll_id):
+    """Edit a quesiton in given poll"""
+    survey = get_object_or_404(Survey, pk=survey_id)
+    if survey.belongs_to(request.user) is False:
+        messages.error(request, 'Computer say no, because this is not yours')
+        return HttpResponseRedirect('/survey/' + survey_id + '/') 
     
+    poll = get_object_or_404(Poll, pk=poll_id)
+    if request.method != 'POST':
+        return HttpResponseRedirect('/survey/' + survey_id + '/') 
+
+    form = PollForm(request.POST)
+    if form.is_valid():
+        cd = request.POST
+        for c in poll.choices():
+            if cd['option_' + str(c.pk)] != '':
+                c.choice = cd['option_' + str(c.pk)]
+                c.save()
+            else:
+                c.delete()
+        for k,v in cd.items():
+            if k.startswith('newoption_'):
+                choice = Choice(poll=poll,choice=cd[k])
+                choice.save()
+        messages.success(request, 'Question updated')
+        return HttpResponseRedirect('/survey/' + survey_id + '/question/edit/');
+    else:
+        for k, v in form.errors.items():
+            messages.error(request, v[0])
+        return HttpResponseRedirect('/survey/' + survey_id + '/question/edit/');    
+        
+
+
+@login_required(login_url='/accounts/signin/')
+def delete(request, survey_id):
+    """Delete a survey"""
+    user = request.user
+    survey = get_object_or_404(Survey, pk=survey_id)
+    if survey.belongs_to(user):
+        survey.delete()
+        messages.success(request, 'Survey deleted')
+        return HttpResponseRedirect('/home/')
+    else:
+        messages.error(request, 'Computer say no, because this is not yours')
+        return HttpResponseRedirect('/survey/' + survey_id + '/') 
               
 @login_required(login_url='/accounts/signin/')
 def vote(request, survey_id):
