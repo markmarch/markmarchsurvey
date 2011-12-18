@@ -23,6 +23,15 @@ class SurveyForm(forms.Form):
                 raise forms.ValidationError(u'expire date must be in the future')
         return expire_date
 
+class PollForm(forms.Form):
+    """Poll Form"""
+    survey_id = forms.CharField(initial='', widget=forms.widgets.HiddenInput())
+    question = forms.CharField(max_length=100)
+    option_1 = forms.CharField(max_length=100, label='Option 1')
+    option_2 = forms.CharField(max_length=100, label='Option 2')
+    
+
+
         
 
 
