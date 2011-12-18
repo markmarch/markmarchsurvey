@@ -60,7 +60,9 @@ class Poll(models.Model):
     def vote(self, user, choice):
         # check if this user already voted on this question
         try:
-            previous_vote = Vote.objects.get(poll__pk=self.pk, user__pk=user.pk)
+            previous_vote = Vote.objects.get(poll=self, user=user)
+            if previous_vote.choice == choice:
+                return
             previous_vote.choice.decrease_vote()
             previous_vote.choice = choice
             choice.increase_vote()
@@ -96,7 +98,7 @@ class Vote(models.Model):
     date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return user.username + " voted on " + poll.survey.name
+        return self.user.username + " voted on " + self.poll.survey.name
         
         
 class Comment(models.Model):
