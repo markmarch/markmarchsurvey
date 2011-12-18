@@ -6,7 +6,7 @@ import datetime
 class SurveyForm(forms.Form):
     """Survey Form"""
     name = forms.CharField(max_length=100)
-    desc = forms.CharField(max_length=500, widget=forms.Textarea)
+    desc = forms.CharField(max_length=500)
     expires = forms.BooleanField(required=False)
     expire_date = forms.DateField(required=False, widget=extras.SelectDateWidget())
     visibility_help = """if you choose 'private', only your friends can vote on this survey"""
