@@ -42,9 +42,6 @@ class Survey(models.Model):
     
     def comments(self):
         return Comment.objects.filter(survey__pk=self.pk)
-            
-    def votes(self):
-        return Vote.objects.filter(survey__pk=self.pk)
 
 class Poll(models.Model):
     """Poll model"""
@@ -57,6 +54,9 @@ class Poll(models.Model):
     def choices(self):
         return Choice.objects.filter(poll__pk=self.pk)
 
+    def totoal_votes(self):
+        return Vote.filter(poll__pk=self.pk).count()
+    
     def vote(self, user, choice):
         # check if this user already voted on this question
         try:
@@ -108,5 +108,3 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return self.comment 
-
-
