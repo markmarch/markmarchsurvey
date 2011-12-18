@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block nav-survey %} <li class="active"><a href="/survey/">Survey</a></li>{% endblock %}
+{% block content %}
+<div class="content">
+    {% if form.errors %}
+        <div class="alert-message error">
+            <a class="close" href="#">×</a>
+            <p><strong>Opos...we got a problem!</strong></p>
+        </div>
+        {% for error in form.non_field_errors %}
+            <li class="error"> {{ error }} </li>
+        {% endfor %}
+    {% endif %}
+    {% include "message.html" %}
+    <div class="summary">
+        <h3> {{survey.name}}</h3>
+        <p> {{survey.desc}}</p>
+        <span> {{survey.num_of_questions}} questions</span>
+    <div>
+        <a href="/survey/{{survey.pk}}/" class="btn primary">Done Adding Question</a>
+    </div>
+    <div> <h3> Add Questions</h3></div>
+    <div class="new-question">
+        <form action="/survey/{{survey.pk}}/add/" method="post">{% csrf_token%}
+            <input type="hidden" name="survey_id" value="{{survey.pk}}">
+            <label>Question:</label>
+            <input type="text" name="question"><br>
+            {% for i in 123|make_list %}
+            <div id="option_{{i}}" class="option">
+                <label>Option {{i}}</label>
+                <input type="text" name="option_{{i}}"><br>
+            </div>
+            {% endfor%}
+            <label></label><a href="#" id="add_more_option">Add more options</a><br>
+            <label></label><input type="submit" value="Add Question" class="btn primary" />
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    $('#add_more_option').bind('click', function(e){
+        var num= $('.option').length;
+        var newNum = new Number(num + 1);
+        var newOption=$('#option_' + num).clone().attr('id', 'option_' + newNum);
+        newOption.html('<label>Option ' + newNum + '</label><input type="text" name="option_' + newNum + '"><br>');
+        $('#option_' + num).after(newOption);
+    })
+</script>
+{% endblock %}
