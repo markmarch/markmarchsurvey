@@ -24,15 +24,12 @@ def home(request):
         
 def survey(request, survey_id):
     """Survey view, list survey details"""
-    survey = Survey.objects.get(pk=survey_id)
-    if survey is not None:
-        user = request.user
-        editable = survey.belongs_to(user)
-        return render_to_response('survey/survey.html', {'survey': survey, 'editable': editable},
-            context_instance=RequestContext(request))
-    else:
-        return render_to_response('404.html', {'error': ['Survey not found']},
-            context_instance=RequestContext(request))
+    survey = get_object_or_404(Survey, pk=survey_id)
+    user = request.user
+    editable = survey.belongs_to(user)
+    return render_to_response('survey/survey.html', 
+        {'survey': survey, 'editable': editable},
+        context_instance=RequestContext(request))
  
 @login_required(login_url='/accounts/signin/')
 def new(request):
