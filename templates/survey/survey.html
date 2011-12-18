@@ -5,13 +5,18 @@
 	{% include "message.html" %}
 	<div class="survey-summary">
 		<h3>{{ survey.name}}</h3>
-		<div class="survey-desc">
-		{{ sruvey.desc }}
-		</div>
 		<div class="survey-details">
-		<div>
-			<span>Created On <strong>{{survey.create_date}}</strong></span> by: <img src="{{survey.user.gravatar}}">
-			<a href="/account/{{survey.user.username}}">{{survey.user.username}}</a>
+			<div>
+				<img src="{{survey.user.profile.gravatar}}">
+				<a href="/account/{{survey.user.username}}"><strong>{{survey.user.username}}</strong></a>
+				<p>Created On :{{survey.create_date}}</p>
+					{% if survey.expire_date %}
+					<p> Expires on: {{survey.expire_date|date:"M D Y"}}</p>
+					{% endif %}
+			</div>
+		</div>
+		<div class="survey-desc">
+		{{ svey.desc }}
 		</div>
 	</div>
 	<hr>
@@ -30,7 +35,7 @@
 			<a href="#" class="dropdown-toggle"> Action </a>
 			<ul class="dropdown-menu">
 				<li><a href="/survey/{{survey.pk}}/edit/">Edit</a><li>
-				<li><a href="/survey/{{survey.pk}}/delete/">Delete</a></li>
+				<li><a href="#" data-controls-modal="modal-from-dom" data-backdrop="true" data-keyboard="true">Delete</a></li>
 			</ul>
 		</li>
 		{% endif %}
@@ -81,11 +86,38 @@
 			{% endfor %}
 			<form action="/survey/{{survey.pk}}/comment/" method="post">
 			{% csrf_token %}
-				<input type="hidden" name="survey_id" value="{{survey.pk}}">
-				<textarea rows="5" cols="320" name="comment"></textarea><br>
-				<input type="submit" class="btn primary" value="Comment">
+				<fieldset>
+					<legend style="padding-left: 0"> Add a comment</legend>
+					<input type="hidden" name="survey_id" value="{{survey.pk}}">
+					<div class="clearfix">
+						<div class="input" style="margin-left:0">
+							<textarea  class="xxlarge" row="3" name="comment"></textarea>
+						</div>
+					</div>
+					<input type="submit" class="btn primary" value="Comment">
+				</fieldset>
 			</form>
 		</div>
 	</div>
 </div>
 {% endblock %}
+{% block after-container %}
+<div id="modal-from-dom" class="modal hide fade in" style="display: none;">
+	<div class="modal-header">
+		<a href="#" class="close">&times;</a>
+		<h3>Confirm delete?</h3>
+	</div>
+	<div class="modal-body">
+		<p> Delete survey <strong>{{survey.name}}</strong></p>
+	</div>
+	<div class="modal-footer">
+		<a href="#" class="btn secondary cancel">Cancel</a>
+		<a href="/survey/{{survey.pk}}/delete/" class="btn danger">Delete</a>
+	</div>
+</div>
+{% endblock %}
+
+
+
+
+

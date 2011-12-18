@@ -23,6 +23,12 @@ body {
   text-align: center; /* center align it with the container */
 }
 
+.container-fluid .main {
+  max-width: 800px;
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .dropdown-menu form input {
   max-width: 150px;
   margin: 5px 10px 5px 10px;
@@ -30,10 +36,6 @@ body {
 
 .content .title h3 {
   margin: 20px 0px 10px 20px;
-}
-
-form input {
-  margin: 5px 10px 5px 10px;
 }
 
 .error {

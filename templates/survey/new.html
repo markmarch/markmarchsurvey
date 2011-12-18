@@ -1,13 +1,128 @@
 {% extends "base.html" %}
 {% block nav-survey %} <li class="active"><a href="/survey/">Survey</a></li>{% endblock %}
 {% block content %}
-<div class="content">
-    <div> <h3> Create New Survey </h3></div>
+<div class="main">
+    {% include "message.html" %}
     <div class="new-survey">
-        <form action="/survey/new/" method="post">{% csrf_token%}
-            {{form.as_p}}
-            <input type="submit" value="Create" class="btn primary" />
+        <form action="{% if edit %}/survey/{{survey_id}}/edit/{% else %}/survey/new/{%endif%}" method="post">{% csrf_token%}
+            <fieldset>
+                {% if edit %}
+                <legend>Edit Survey</legend>
+                {% else %}
+                <legend>Create New Survey</legend>
+                {% endif %}
+                <div class="clearfix">
+                    <label for="name">Name</label>
+                    <div class="input">
+                        <input class="xlarge" id="name" name="name" size="30" type="text" value="{{name}}">
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="desc">Description</label>
+                    <div class="input">
+                        <textarea class="xxlarge" id="desc" name="desc" row="3">{{desc}}</textarea>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label id="expire-label"></label>
+                    <div class="input">
+                        <ul class="inputs-list">
+                            <li>
+                            <label>
+                                <input type="checkbox" name="expires"
+                                    checked="{{expires}}">
+                                <span>Expires</span>
+                            </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label id="expire-date">Expire Date</label>
+                    <div class="input">
+                        <select class="small" name="expire_date_month" id="id_expire_date_month">
+                            <option value="0">---</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                        <select class="small" name="expire_date_day" id="id_expire_date_day">
+                            <option value="0">---</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                        </select>
+                        <select class="small" name="expire_date_year" id="id_expire_date_year">
+                            <option value="0">---</option>
+                            <option value="2011">2011</option>
+                            <option value="2012">2012</option>
+                            <option value="2013">2013</option>
+                            <option value="2014">2014</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <label for="visibility">Visibility</label>
+                    <div class="input">
+                        <select class="small" name="visibility" value="{{visibility}}">
+                            <option value="public">Public</option>
+                            <option value="private">Private</option>
+                        </select>
+                        <span class="help-block"> if you choose 'private', only your friends cant vote on this survey</span>
+                    </div>
+                </div>
+                <div class="actions">
+                    <input type="submit" value="{% if edit %}Update{% else %}Create{% endif %}" class="btn primary" />
+                </div>
+            </fieldset>
         </form>
     </div>
 </div>
 {% endblock %}
+{% block script %}
+<script type="text/javascript">
+</script>
+{%endblock%}
