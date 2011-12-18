@@ -31,6 +31,67 @@ def survey(request, survey_id):
         {'survey': survey, 'editable': editable},
         context_instance=RequestContext(request))
  
+@login_required(login_url='/accounts/signin')
+def edit(request, survey_id):
+    """Edit a survey"""
+    survey = get_object_or_404(Survey, pk=survey_id)
+    if survey.belongs_to(request.user) is False:
+        messages.error(request, 'You can not eidt this survey')
+        return render_to_response('survey/survey.html',
+            {'survey': survey, 'editable': False},
+            context_instance=RequestContext(request))
+    expires = survey.expire_date is not None
+    month, day, year = 0, 0, 0
+    if expires:
+        month = survey.expire_date.month
+        day = survey.expire_date.day
+        year = survey.expire_date.year
+    if request.method == 'GET':
+        return render_to_response('survey/new.html', 
+            {
+            'name': survey.name,
+            'desc': survey.desc,
+            'expires': expires,
+            'month': month,
+            'day': day,
+            'year': year,
+            'visibility': survey.visibility,
+            'edit': True,
+            'survey_id': survey_id
+            },
+            context_instance=RequestContext(request))
+    else:
+        if request.method == 'POST':
+            form = SurveyForm(request.POST)
+            if form.is_valid():
+                cd = form.cleaned_data
+                survey.name = cd['name']
+                survey.desc = cd['desc']
+                if cd['expires']:
+                    survey.expire_date = cd['expire_date']
+                survey.visibility = cd['visibility']
+                survey.save()
+                messages.success(request, 'Update sucess')
+                return HttpResponseRedirect('/survey/' + survey_id + '/question/edit')
+            else:
+                for k, v in form.errors.items():
+                    messages.error(request, v[0])
+                return render_to_response('survey/new.html', 
+                    {
+                        'name': survey.name,
+                        'desc': survey.desc,
+                        'expires': expires,
+                        'month': month,
+                        'day': day,
+                        'year': year,
+                        'visibility': survey.visibility,
+                        'edit': True,
+                        'survey_id': survey_id
+                    },
+                    context_instance=RequestContext(request))
+        else:
+            raise Http404
+
 @login_required(login_url='/accounts/signin/')
 def new(request):
     """Create new survey"""
@@ -59,7 +120,7 @@ def new(request):
 
                    
 @login_required(login_url='/accounts/signin/')
-def add(request, survey_id):
+def add_question(request, survey_id):
     """Add a new question to survey"""
     survey = get_object_or_404(Survey, pk=survey_id)
     user = request.user
@@ -91,6 +152,11 @@ def add(request, survey_id):
                 context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect('/survey/' + str(survey.pk) + '/')
+
+@login_required(login_url='/accounts/signin/')
+def edit_question(request, survey_id):
+    """Edit questions in a survey"""
+    return HttpResponseRedirect('/home/')
 
 @login_required(login_url='/accounts/signin/')
 def comment(request, survey_id):
