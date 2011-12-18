@@ -50,7 +50,10 @@ class Poll(models.Model):
 
     def __unicode__(self):
         return self.question
-        
+    
+    def choice_counts(self):
+        return Choice.objects.filter(poll__pk=self.pk).count()
+            
     def choices(self):
         return Choice.objects.filter(poll__pk=self.pk)
 
