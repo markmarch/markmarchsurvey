@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block nav-survey %} <li class="active"><a href="/survey/">Survey</a></li>{% endblock %}
+{% block content %}
+<div class="content">
+	<div class="survey-title">
+		<h3>{{ survey.name}}</h3>
+	</div>
+	<div class="survey-desc">
+		{{ sruvey.desc }}
+	</div>
+	<div class="survey-details">
+		<div><span>Created On <strong>{{survey.create_date}}</strong></span> by: <img src="{{survey.user.gravatar}}"><a href="/account/{{survey.user.username}}">{{survey.user.username}}</a></div>
+		<div class="voters">
+			<a href="/surve/{{survey.pk}}/voters/">10 people voted</a>
+		</div>
+	</div>
+	{% if editable %}
+	<a href="/survey/edit/{{survey.pk}}/" class="btn primary">Edit</a>
+	{% endif %}
+	<div class="question">
+		<form action="/survey/{{survey.pk}}/vote/" method="post">
+		{% csrf_token %}
+		{% for poll in survey.polls %}
+		<hr>
+		<h3> {{ poll.question }}</h3>
+		<ul>
+			{% for choice in poll.choices %}
+			<input type="radio" name="{{poll.pk}}" value="{{choice.pk}}" class="choice"> {{ choice.choice }}</input><br>
+			{% endfor %}
+		</ul>
+		{% endfor %}
+		<input type="submit" value="Vote" class="btn primary">
+		</form>
+	</div>
+</div>
+{% endblock %}

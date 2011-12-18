@@ -2,31 +2,36 @@
 {% block nav-home %} <li class="active"><a href="/home/">Home</a></li>{% endblock %}
 {% block page_title %} {% endblock %}
 {% block content %}
-<div class="content">
-	{% if user_surveys %}
-	<div class="sidebar">
-		<div class="section-title"> Your Survey</div>
-		<div class="survey-list box">
+{% if user.is_authenticated %}
+<div class="sidebar">
+	<div class="section-title"> Your Survey</div>
+	<div class="survey-list box">
+		{% if user_surveys%}
 			{% for survey in user_surveys %}
 			<div class="survey">
 				<a href="/survey/{{survey.pk}}/" class="survey-title"> {{ survey.name }} </a>
 				<p><span> {{ survey.num_of_questions }} </span> questions</p>
 			</div>
 			{% endfor %}
-			<a href="/survey/user/{{user.username}}">See More...</a>
-		</div>
+		{% else %}
+		<p>You haven't created any survey yet.</p>
+		{% endif %}
+		<div><a href="/survey/new/" class="btn primary"> Create New Survey</a></div>
+		<a href="/survey/user/{{user.username}}">See More...</a>
 	</div>
-	{% endif %}
-	<div class="main">
-		<div class="section-title"> Recent public survey:</div>
-		<div class="survey-list section box">
-			{% for survey in public_surveys %}
-			<div class="survey">
-				<a href="/survey/{{survey.pk}}/" class="survey-title"> {{ survey.name }} </a>
-				<p><span> {{ survey.num_of_questions }} </span> questions</p>
-			</div>
-			{% endfor %}
+</div>
+{% endif %}
+	
+<div class="content">
+	<h3> Recent public survey</h3>
+	<hr>
+	<div class="survey-list section">
+		{% for survey in public_surveys %}
+		<div class="survey">
+			<a href="/survey/{{survey.pk}}/" class="survey-title"> {{ survey.name }} </a>
+			<p><span> {{ survey.num_of_questions }} </span> questions</p>
 		</div>
+		{% endfor %}
 	</div>
 </div>
 {% endblock %}
