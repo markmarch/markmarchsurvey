@@ -2,7 +2,6 @@
 {% block nav-home %} <li class="active"><a href="/home/">Home</a></li>{% endblock %}
 {% block page_title %} {% endblock %}
 {% block content %}
-{% include "message.html" %}
 {% if user.is_authenticated %}
 <div class="sidebar">
 	<div class="section-title"> 
@@ -25,6 +24,7 @@
 {% endif %}
 	
 <div class="content">
+	{% include "message.html" %}
 	<h3> Recent public survey</h3>
 	<hr>
 	<div class="survey-list section">

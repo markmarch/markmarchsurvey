@@ -1,0 +1,83 @@
+{% extends "base.html"%}
+{% block nav-survey %} <li class="active"><a href="/survey/">Survey</a></li>{% endblock %}
+{% block content %}
+<div class="main">
+    {% include "message.html" %}
+    <div class="survey-summary">
+        <h3>{{ survey.name}}</h3>
+        <div class="survey-details">
+            <div>
+                <img src="{{survey.user.profile.gravatar}}">
+                <a href="/user/{{survey.user.username}}/"><strong>{{survey.user.username}}</strong></a>
+                <p>Created On :{{survey.create_date}}</p>
+                {% if survey.expire_date %}
+                <p> Expires on: {{survey.expire_date|date:"M D Y"}}</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="survey-desc">
+            {{ svey.desc }}
+        </div>
+    </div>
+    <div class="actions">
+        <a href="/survey/{{survey.pk}}/" class="btn success">Done Editing</a>
+        <a href="/survey/{{survey.pk}}/question/add/" class="btn primary">Add Question</a>
+        <a href="/survey/{{survey.pk}}/edit/" class="btn secondary">Edit Survey Info</a>
+        <a href="#" data-controls-modal="modal-from-dom" data-backdrop="true" data-keyboard="true" class="btn danger">Delete Survey</a>
+    </div>
+    {% for poll in survey.polls %}
+    <div class="box" id="question_{{poll.pk}}">
+        <h3>{{poll.question}}</h3>
+        <div>
+            {% for choice in poll.choices %}
+            <p>{{choice.choice}}</p>
+            {% endfor %}
+        </div>
+        <span><a class="edit-question"  poll-id="{{poll.pk}}">Edit</a> <a class='delete-question'  poll-id="{{poll.pk}}">Delete</a></span>
+    </div>
+    <div class="box" style="display:none;" id="form_{{poll.pk}}">
+        {% include "survey/question_form.html" %}
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+{% block after-container %}
+<div id="modal-from-dom" class="modal hide fade in" style="display: none;">
+    <div class="modal-header">
+        <a href="#" class="close">&times;</a>
+        <h3>Confirm delete?</h3>
+    </div>
+    <div class="modal-body">
+        <p> Delete survey <strong>{{survey.name}}</strong></p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn secondary cancel">Cancel</a>
+        <a href="/survey/{{survey.pk}}/delete/" class="btn danger">Delete</a>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    $('.edit-question').bind('click', function(e){
+            var pollId = $(this).attr('poll-id');
+            $('#question_' + pollId).hide();
+            $('#form_' + pollId).show();
+            });
+
+    $('.add_more_option').bind('click', function(e){
+        var pollId = $(this).attr('poll-id');
+        var num= $('.option_' + pollId).length;
+        var newNum = new Number(num + 1);
+        var newOption=$('#option_' + pollId + '_' + num).clone().attr('id', 'option_' + newNum);
+        newOption.attr('class', 'clearfix')
+        newOption.html('<label for="option_' + newNum +'">Option ' + newNum + '</label><div class="input"><input type="text" name="newoption_' + newNum + '"></div>');
+        $('#option_' + pollId + '_' + num).after(newOption);
+        });
+    // hide form
+    $('.cancel').bind('click', function(e){
+        var pollId = $(this).attr('poll-id');
+        $('#question_' + pollId).show();
+        $('#form_' + pollId).hide();
+    });
+</script>
+{% endblock %}

@@ -7,7 +7,7 @@
         <form action="{% if edit %}/survey/{{survey_id}}/edit/{% else %}/survey/new/{%endif%}" method="post">{% csrf_token%}
             <fieldset>
                 {% if edit %}
-                <legend>Edit Survey</legend>
+                <legend>Edit Survey Info</legend>
                 {% else %}
                 <legend>Create New Survey</legend>
                 {% endif %}
@@ -116,6 +116,8 @@
                 </div>
                 <div class="actions">
                     <input type="submit" value="{% if edit %}Update{% else %}Create{% endif %}" class="btn primary" />
+                    <a href="/survey/{{survey_id}}/question/edit/" class="btn secondary"> Skip and Edit Questions</a>
+                    <a href="/survey/{{survey_id}}/" class="btn secondary">Cancel</a>
                 </div>
             </fieldset>
         </form>

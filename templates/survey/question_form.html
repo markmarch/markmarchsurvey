@@ -1,0 +1,26 @@
+<form action="/survey/{{survey.pk}}/{{poll.pk}}/edit/" method="post">{% csrf_token%}
+    <fieldset>
+        <legend>Edit Question</legend>
+        <input type="hidden" name="survey_id" value="{{survey.pk}}"
+        <input type="hidden" name="poll_id" value="{{poll.pk}}">
+        <div class="clearfix">
+            <label for="question" style="margin-top: 5px;">Question</label>
+            <div class="input">
+                <input type="text" name="question" id="question" value="{{poll.question}}">
+            </div>
+        </div>
+        {% for c in poll.choices %}
+        <div id="option_{{poll.pk}}_{{forloop.counter}}" class="clearfix">
+            <label for="option_{{i}}">Option {{ forloop.counter }}</label>
+            <div class="input">
+                <input type="text" name="option_{{c.pk}}" class="option_{{poll.pk}}" value="{{c.choice}}">
+            </div>
+        </div>
+        {% endfor%}
+        <label></label><a class="add_more_option" poll-id="{{poll.pk}}">Add more options</a><br>
+        <div class="actions">
+            <input type="submit" value="Edit Question" class="btn primary">
+            <a class="btn secondary cancel" poll-id="{{poll.pk}}">Cancel</a>
+        </div>
+    </fieldset>
+</form>

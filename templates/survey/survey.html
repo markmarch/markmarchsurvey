@@ -8,7 +8,7 @@
 		<div class="survey-details">
 			<div>
 				<img src="{{survey.user.profile.gravatar}}">
-				<a href="/account/{{survey.user.username}}"><strong>{{survey.user.username}}</strong></a>
+				<a href="/user/{{survey.user.username}}/"><strong>{{survey.user.username}}</strong></a>
 				<p>Created On :{{survey.create_date}}</p>
 					{% if survey.expire_date %}
 					<p> Expires on: {{survey.expire_date|date:"M D Y"}}</p>
@@ -78,7 +78,7 @@
 		<div clas="tab-pane" id="comments">
 			{% for c in survey.comments %}
 			<div class="comment">
-				<span><img src="{{c.user.profile.gravatar}}"></img><a href="/user/{{c.user.pk}}/"> {{c.user.username}}</a></span>
+				<span><img src="{{c.user.profile.gravatar}}"></img><a href="/user/{{c.user.username}}/"> {{c.user.username}}</a></span>
 				<span> On {{c.date}}</span>
 				<p>{{c.comment}}</p>
 				<br>
@@ -103,17 +103,17 @@
 {% endblock %}
 {% block after-container %}
 <div id="modal-from-dom" class="modal hide fade in" style="display: none;">
-	<div class="modal-header">
-		<a href="#" class="close">&times;</a>
-		<h3>Confirm delete?</h3>
-	</div>
-	<div class="modal-body">
-		<p> Delete survey <strong>{{survey.name}}</strong></p>
-	</div>
-	<div class="modal-footer">
-		<a href="#" class="btn secondary cancel">Cancel</a>
-		<a href="/survey/{{survey.pk}}/delete/" class="btn danger">Delete</a>
-	</div>
+    <div class="modal-header">
+        <a href="#" class="close">&times;</a>
+        <h3>Confirm delete?</h3>
+    </div>
+    <div class="modal-body">
+        <p> Delete survey <strong>{{survey.name}}</strong></p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn secondary cancel">Cancel</a>
+        <a href="/survey/{{survey.pk}}/delete/" class="btn danger">Delete</a>
+    </div>
 </div>
 {% endblock %}
 

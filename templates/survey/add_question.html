@@ -19,7 +19,9 @@
         <div>
             <a href="/survey/{{survey.pk}}/" class="btn primary">Done Adding Question</a>
         </div>
-        <form action="/survey/{{survey.pk}}/add/" method="post">{% csrf_token%}
+    </div>
+    <div class="box">
+        <form action="/survey/{{survey.pk}}/question/add/" method="post">{% csrf_token%}
             <fieldset>
                 <legend>Add New Question</legend>
                 <input type="hidden" name="survey_id" value="{{survey.pk}}">
