@@ -4,7 +4,9 @@
 {% block content %}
 {% if user.is_authenticated %}
 <div class="sidebar">
-	<div class="section-title"> Your Survey</div>
+	<div class="section-title"> 
+	Your Survey <a href="/survey/new/" class="btn primary">New</a>
+	</div>
 	<div class="survey-list box">
 		{% if user_surveys%}
 			{% for survey in user_surveys %}
@@ -16,7 +18,6 @@
 		{% else %}
 		<p>You haven't created any survey yet.</p>
 		{% endif %}
-		<div><a href="/survey/new/" class="btn primary"> Create New Survey</a></div>
 		<a href="/survey/user/{{user.username}}">See More...</a>
 	</div>
 </div>
