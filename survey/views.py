@@ -95,6 +95,24 @@ def add(request, survey_id):
     else:
         return HttpResponseRedirect('/survey/' + str(survey.pk) + '/')
 
+@login_required(login_url='/accounts/signin/')
+def comment(request, survey_id):
+    """Comment on a survey"""
+    user = request.user
+    survey = get_object_or_404(Survey, pk=survey_id)
+    if request.method != 'POST':
+        return HttpResponseRedirect('/survey/' + survey_id + '/')
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        cd = form.cleaned_data
+        comment = Comment(survey=survey, user=user, comment=cd['comment'])
+        comment.save()
+        messages.success(request, "Comment Success")
+        return HttpResponseRedirect('/survey/'+survey_id + '/')
+    else:
+        messages.error(request, "Comment failed")
+        return HttpResponseRedirect('/survey/'+survey_id + '/')
+
     
               
 @login_required(login_url='/accounts/signin/')
@@ -107,9 +125,11 @@ def vote(request, survey_id):
             context_intance=RequestContext(request))
     
     if survey is not None and survey.can_vote(user):
-
-        return render_to_response('survey/results.html', {'survey': survey},
-            context_instance=RequestContext(request))
+        polls = Poll.objects.filter(survey__pk=survey_id)
+        for p in polls:
+            choice = Choice.objects.get(pk=request.POST[str(p.pk)])
+            p.vote(user,choice)
+        return HttpResponseRedirect('/survey/' + str(survey_id) + '/')
     else:
         return render_to_response('survey/survey.html', {'survey': survey},
             context_instance=RequestContext(request))
