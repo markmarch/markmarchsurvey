@@ -11,35 +11,21 @@ body {
 ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
 ::selection { background: #fe57a1; color: #fff; text-shadow: none; }
 
-.container > footer p {
-  text-align: center; /* center align it with the container */
+.container-fluid {
+	position: relative;
+	min-width: 940px;
+	padding-left: 20px;
+	padding-right: 20px;
+	zoom: 1;
 }
 
-/* The white background content wrapper */
-.content {
-  padding: 20px;
-  margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
-  -webkit-border-radius: 0 0 6px 6px;
-  -moz-border-radius: 0 0 6px 6px;
-  border-radius: 0 0 6px 6px;
-  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-  box-shadow: 0 1px 2px rgba(0,0,0,.15);
-	min-height: 500px;
+.container-fluid > footer p {
+  text-align: center; /* center align it with the container */
 }
 
 .dropdown-menu form input {
   max-width: 150px;
   margin: 5px 10px 5px 10px;
-}
-
-.container .title{
-  background-color: #ddd;
-  height: 40px;
-  margin: 0 -20px; 
-  -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-  -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
-  box-shadow: 0 1px 2px rgba(0,0,0,.15);
 }
 
 .content .title h3 {
@@ -120,16 +106,16 @@ li .error {
   font-style: bold;
 }
 
-.content .main{
-  margin-left: 240px;
+.container-fluid > .content {
+	margin-top: 20px;
+ 	margin-left: 250px;
 }
 
-.main .section {
-}
-
-.content .sidebar {
-  float: left;
-  width: 220px;
+.container-fluid > .sidebar {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	width: 220px;
 }
 
 .section-title {
