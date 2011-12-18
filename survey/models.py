@@ -39,7 +39,12 @@ class Survey(models.Model):
             else:
                 as_user_b = self.user.friendship_target.objects.get(status='mutual',user_a=user)
                 return as_user_b is not None
+    
+    def comments(self):
+        return Comment.objects.filter(survey__pk=self.pk)
             
+    def votes(self):
+        return Vote.objects.filter(survey__pk=self.pk)
 
 class Poll(models.Model):
     """Poll model"""
@@ -51,7 +56,20 @@ class Poll(models.Model):
         
     def choices(self):
         return Choice.objects.filter(poll__pk=self.pk)
-    
+
+    def vote(self, user, choice):
+        # check if this user already voted on this question
+        try:
+            previous_vote = Vote.objects.get(poll__pk=self.pk, user__pk=user.pk)
+            previous_vote.choice.decrease_vote()
+            previous_vote.choice = choice
+            choice.increase_vote()
+            previous_vote.save()
+        except Vote.DoesNotExist:
+            vote = Vote(poll=self, user=user, choice=choice)
+            vote.save()
+            choice.increase_vote()
+
 
 class Choice(models.Model):
     """Choice model"""
@@ -62,14 +80,33 @@ class Choice(models.Model):
     def __unicode__(self):
         return self.choice
         
+    def decrease_vote(self):
+        self.votes = self.votes - 1
+        self.save()
+    
+    def increase_vote(self):
+        self.votes = self.votes + 1
+        self.save()
+
 class Vote(models.Model):
     """Vote model"""
     poll = models.ForeignKey(Poll)
     user = models.ForeignKey(User)
-    choice = models.IntegerField()
-    
+    choice = models.ForeignKey(Choice)
+    date = models.DateTimeField(auto_now=True)
+
     def __unicode__(self):
-        return user.username + "voted on " + poll.survey.name
-         
+        return user.username + " voted on " + poll.survey.name
+        
+        
+class Comment(models.Model):
+    """Comments on survye"""
+    survey = models.ForeignKey(Survey)
+    user = models.ForeignKey(User)
+    comment = models.CharField(max_length=500)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return self.comment 
 
 
