@@ -262,7 +262,7 @@ def delete(request, survey_id):
 def vote(request, survey_id):
     """Vote on a survey"""
     survey = get_object_or_404(Survey, pk=survey_id)
-    if survey.is_expired:
+    if survey.is_expired is True:
         messages.error(request, 'This survey is expired')
         return HttpResponseRedirect('/survey/' + survey_id + '/')
     
