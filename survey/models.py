@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from accounts.models import *
 import datetime
 
 class Survey(models.Model):
@@ -19,6 +20,13 @@ class Survey(models.Model):
     def __unicode__(self):
         return self.name
     
+    def is_expired(self):
+        if self.expire_date is None:
+            return False
+        else:
+            now = datetime.datetime.now()
+            return now > self.expire_date
+
     def num_of_questions(self):
         return Poll.objects.filter(survey__pk=self.pk).count()
         
@@ -32,13 +40,14 @@ class Survey(models.Model):
         if self.visibility == 'public' or self.user == user:
             return True
         else:
+            return True
             # check if user is a friend
-            as_user_a = self.user.friendship_requester.objects.get(status='mutual', user_b=user)
-            if as_user_a is not None:
-                return True
-            else:
-                as_user_b = self.user.friendship_target.objects.get(status='mutual',user_a=user)
-                return as_user_b is not None
+            # as_user_a = Friendship.objects.get(status='mutual', user_b=user)
+            # if as_user_a is not None:
+            #     return True
+            # else:
+            #     as_user_b = self.user.friendship_target.objects.get(status='mutual',user_a=user)
+            #     return as_user_b is not None
     
     def comments(self):
         return Comment.objects.filter(survey__pk=self.pk)
@@ -55,10 +64,10 @@ class Poll(models.Model):
         return Choice.objects.filter(poll__pk=self.pk).count()
             
     def choices(self):
-        return Choice.objects.filter(poll__pk=self.pk)
+        return Choice.objects.filter(poll__pk=self.pk).order_by('pk')
 
-    def totoal_votes(self):
-        return Vote.filter(poll__pk=self.pk).count()
+    def total_votes(self):
+        return Vote.objects.filter(poll__pk=self.pk).count()
     
     def vote(self, user, choice):
         # check if this user already voted on this question
@@ -74,8 +83,10 @@ class Poll(models.Model):
             vote = Vote(poll=self, user=user, choice=choice)
             vote.save()
             choice.increase_vote()
-
-
+    
+    def get_user_choice(self, user):
+        return Vote.objects.filter(poll=self, user=user)
+    
 class Choice(models.Model):
     """Choice model"""
     poll = models.ForeignKey(Poll)
@@ -93,6 +104,12 @@ class Choice(models.Model):
         self.votes = self.votes + 1
         self.save()
 
+    def percentage(self):
+        total = self.poll.total_votes()
+        if total == 0:
+            return 0
+        return (self.votes/float(total))*100
+
 class Vote(models.Model):
     """Vote model"""
     poll = models.ForeignKey(Poll)
@@ -102,7 +119,6 @@ class Vote(models.Model):
 
     def __unicode__(self):
         return self.user.username + " voted on " + self.poll.survey.name
-        
         
 class Comment(models.Model):
     """Comments on survye"""
