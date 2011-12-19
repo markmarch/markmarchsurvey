@@ -1,0 +1,4 @@
+app url: http://markmarchsurvey.appspot.com
+Super user credential:
+username: admin
+password: thisisthepassword
