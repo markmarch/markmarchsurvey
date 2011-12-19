@@ -1,20 +1,22 @@
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect
+from django.contrib import messages
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.contrib.messages.api import get_messages
 from django.core.context_processors import csrf
 import urllib, hashlib
 from django.contrib.auth.models import User
 
 from forms import *
+from survey.models import *
+from models import *
+from itertools import chain
 
 def signin(request):
     """Login View"""
-    c = {}
-    c.update(csrf(request))
     if request.method == 'POST':
         form = SignInForm(request.POST)
         if form.is_valid():
@@ -23,7 +25,8 @@ def signin(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect("/")
+                    next = request.POST['next']
+                    return HttpResponseRedirect(next)
                 else:
                     return HttpResponseRedirect("/")
             else:
@@ -32,8 +35,9 @@ def signin(request):
         return render_to_response('accounts/signin.html', {"form": form}, 
             context_instance=RequestContext(request))
     else:
+        next = request.GET.get('next', '/')
         form = SignInForm()
-        return render_to_response('accounts/signin.html', {"form": form},
+        return render_to_response('accounts/signin.html', {"form": form, "next": next},
             context_instance=RequestContext(request))
 
 @login_required(login_url='/accounts/signin/')
@@ -42,6 +46,10 @@ def profile(request):
     user = request.user
     profile = user.profile
     default = "http://www.gravatar.com/avatar/"
+    user_surveys = Survey.objects.filter(user=user)
+    mutual = Friendship.objects.filter(status='mutual')
+    friends = list(chain(mutual.filter(user_a=user).values('user_b'),
+        mutual.filter(user_b=user).values('user_a')))
     if request.method == 'POST':
         form = UserProfileForm(request.POST)
         if form.is_valid():
@@ -61,17 +69,30 @@ def profile(request):
             profile.gravatar = gravatar
             user.save()
             profile.save()
+            messages.success(request, 'Update success')
             return render_to_response("accounts/profile.html", 
-                {"form": form, "message": u'Updated success', "gravatar":gravatar}, 
+                {
+                "form": form, 
+                "surveys": user_surveys,
+                "friends": friends
+                }, 
                 context_instance=RequestContext(request))
         else:
-            return render_to_response("accounts/profile.html", {"form": form}, 
+            return render_to_response("accounts/profile.html",
+                {
+                "form": form, 
+                "surveys": user_surveys,
+                "friends": friends
+                },  
                 context_instance=RequestContext(request))
     else:
-        gravatar = "http://www.gravatar.com/avatar/"+hashlib.md5(user.email.lower()).hexdigest()+"?"
-        gravatar += urllib.urlencode({'d': default, 's':str(40)})
-        user.profile.gravatar = gravatar
-        user.profile.save()
+        is_first = request.GET.get('first', False)
+        if is_first:
+            gravatar = "http://www.gravatar.com/avatar/"+hashlib.md5(user.email.lower()).hexdigest()+"?"
+            gravatar += urllib.urlencode({'d': default, 's':str(40)})
+            profile = user.get_profile()
+            profile.gravatar = gravatar
+            profile.save()
         form = UserProfileForm(initial={
             'username': user.username,
             'email': user.email,
@@ -80,13 +101,13 @@ def profile(request):
             'website': user.profile.website,
             'twitter': user.profile.twitter,
             'github': user.profile.github})
-        return render_to_response("accounts/profile.html", {"form": form}, 
+        return render_to_response("accounts/profile.html", 
+                {
+                "form": form, 
+                "surveys": user_surveys,
+                "friends": friends
+                }, 
                 context_instance=RequestContext(request)) 
-
-
-def dashboard(request):
-    """Home view,"""
-    return render_to_response('dashboard.html',RequestContext(request))
 
 def signup(request):
     """Sign up view, display sign up page"""
@@ -100,7 +121,7 @@ def signup(request):
             if user is not None:
                 user = authenticate(username=cd['username'], password=cd['password'])
                 login(request, user)
-                return HttpResponseRedirect("/accounts/profile/")
+                return HttpResponseRedirect("/accounts/profile/?first=true")
             else:
                 return HttpResponseRedirect("/accounts/signup/")
     else:
@@ -117,3 +138,16 @@ def signout(request):
 def about(request):
     """ About page view """
     return render_to_response('about.html', context_instance=RequestContext(request))
+
+def user(request, username):
+    """User page view"""
+    user = get_object_or_404(User, username=username)
+    surveys = Survey.objects.filter(user=user)
+    return render_to_response('accounts/user.html', {'u': user, 'surveys': surveys},
+        context_instance=RequestContext(request))
+
+def userlist(request):
+    """User list page"""
+    users = User.objects.all()
+    return render_to_response('userlist.html', {'users': users},
+        context_instance=RequestContext(request))
