@@ -25,7 +25,7 @@ def signin(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    next = request.POST['next']
+                    next = request.POST.get('next', '/')
                     return HttpResponseRedirect(next)
                 else:
                     return HttpResponseRedirect("/")
