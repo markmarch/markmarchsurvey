@@ -12,26 +12,30 @@
         {% endfor %}
     {% endif %}
     <form id="sign_up_form" name="sign_up" action="/accounts/signin/" method="post"  onsubmit="return validateForm()">{% csrf_token %}
-        <div class="field">
-            <label for="id_username">Username:</label>
+        <input type="hidden" name="next" value="{{next}}" />
+        <div class="clearfix">
+            <label for="id_username">Username</label>
+            <div class="input">
             {{ form.username}}
             <span id="un_error">
                 {% for error in form.username.errors %}
                 <span class="error help-inline"> {{ error }} </span>
                 {% endfor %}
             </span>
+            </div>
         </div>
-        <div class="field">
-            <label for="id_password">Password:</label>
-            {{ form.password}}
-            <span id="pw_error">
-                {% for error in form.password.errors %}
-                <span class="error help-inline"> {{ error }} </span>
-                {% endfor %}
-            </span>
+        <div class="clearfix">
+            <label for="id_password">Password</label>
+            <div class="input">
+                {{ form.password}}
+                <span id="pw_error">
+                    {% for error in form.password.errors %}
+                    <span class="error help-inline"> {{ error }} </span>
+                    {% endfor %}
+                </span>
+            </div>
         </div>
-        <div class="field">
-            <label></label>
+        <div class="actions">
             <input type="submit" value="Sign In" class="btn primary"/>
         </div>
     </form>

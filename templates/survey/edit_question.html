@@ -4,19 +4,15 @@
 <div class="main">
     {% include "message.html" %}
     <div class="survey-summary">
-        <h3>{{ survey.name}}</h3>
-        <div class="survey-details">
-            <div>
-                <img src="{{survey.user.profile.gravatar}}">
-                <a href="/user/{{survey.user.username}}/"><strong>{{survey.user.username}}</strong></a>
-                <p>Created On :{{survey.create_date}}</p>
-                {% if survey.expire_date %}
-                <p> Expires on: {{survey.expire_date|date:"M D Y"}}</p>
-                {% endif %}
-            </div>
-        </div>
-        <div class="survey-desc">
-            {{ svey.desc }}
+        <div class="survey-details alert-message block-message info">
+            <p><span class="title">{{ survey.name}}</span>
+            <a href="/user/{{survey.user.username}}/"><strong>{{survey.user.username}}</strong></a>
+            </p>
+            <p>Created On :<strong>{{survey.create_date|date:"M d Y"}}</strong></p>
+            {% if survey.expire_date %}
+            <p> Expires on: <span class="label warning">{{survey.expire_date|date:"M d Y"}}</span></p>
+            {% endif %}
+            <blockquote style="margin-top:20px">{{survey.desc}}</blockquote>
         </div>
     </div>
     <div class="actions">
@@ -33,7 +29,8 @@
             <p>{{choice.choice}}</p>
             {% endfor %}
         </div>
-        <span><a class="edit-question"  poll-id="{{poll.pk}}">Edit</a> <a class='delete-question'  poll-id="{{poll.pk}}">Delete</a></span>
+        <span><a class="edit-question"  poll-id="{{poll.pk}}">Edit</a> 
+        <a class='delete-question' data-controls-modal='delete-question-dom' data-backdrop='true' data-keyboard='true'  poll-id="{{poll.pk}}" data>Delete</a></span>
     </div>
     <div class="box" style="display:none;" id="form_{{poll.pk}}">
         {% include "survey/question_form.html" %}
@@ -45,14 +42,26 @@
 <div id="modal-from-dom" class="modal hide fade in" style="display: none;">
     <div class="modal-header">
         <a href="#" class="close">&times;</a>
-        <h3>Confirm delete?</h3>
+        <h3>Confirm delete</h3>
     </div>
     <div class="modal-body">
         <p> Delete survey <strong>{{survey.name}}</strong></p>
     </div>
     <div class="modal-footer">
-        <a href="#" class="btn secondary cancel">Cancel</a>
+        <a class="btn secondary cancel">Cancel</a>
         <a href="/survey/{{survey.pk}}/delete/" class="btn danger">Delete</a>
+    </div>
+</div>
+<div id="delete-question-dom" class="modal hide fade in" style="display: none;">
+    <div class="modal-header">
+        <a class="close">&times;</a>
+        <h3>Confirm delete</h3>
+    </div>
+    <div class="modal-body">
+        <p> Delete this question?</strong></p>
+    </div>
+    <div class="modal-footer">
+        <a href="/survey/{{survey.pk}}/" id="delete-question-btn" class="btn danger">Delete</a>
     </div>
 </div>
 {% endblock %}
@@ -79,5 +88,12 @@
         $('#question_' + pollId).show();
         $('#form_' + pollId).hide();
     });
+
+    // set confirm delete question
+    $('.delete-question').bind('click', function(e){
+        var pollId = $(this).attr('poll-id');
+        var btn = $('#delete-question-btn');
+        btn.attr('href', btn.attr('href') + pollId + '/delete/');
+    })
 </script>
 {% endblock %}

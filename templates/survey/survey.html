@@ -4,15 +4,20 @@
 <div class="main">
 	{% include "message.html" %}
 	<div class="survey-summary">
-		<h3>{{ survey.name}}</h3>
-		<div class="survey-details">
+		<div class="alert-message block-message info">
+			<p class="title">{{ survey.name}}</p>
 			<div>
-				<img src="{{survey.user.profile.gravatar}}">
-				<a href="/user/{{survey.user.username}}/"><strong>{{survey.user.username}}</strong></a>
-				<p>Created On :{{survey.create_date}}</p>
+				On <strong>{{survey.create_date}}</strong> by: <a href="/user/{{survey.user.username}}/"><strong>{{survey.user.username}}</strong></a>
+				<p>
 					{% if survey.expire_date %}
-					<p> Expires on: {{survey.expire_date|date:"M D Y"}}</p>
+					{% if survey.is_expired %}
+					Expired on: <span class="label error">
+					{% else %}
+					Expires on: <span class="label warning">
 					{% endif %}
+					{{survey.expire_date|date:"M d Y"}}</span>
+					{% endif %}
+				</p>
 			</div>
 		</div>
 		<div class="survey-desc">
@@ -46,43 +51,63 @@
 				<form action="/survey/{{survey.pk}}/vote/" method="post">
 				{% csrf_token %}
 				{% for poll in survey.polls %}
-				<h3> {{ poll.question }}</h3>
-				<ul>
-					{% for choice in poll.choices %}
-					<input type="radio" name="{{poll.pk}}" value="{{choice.pk}}" class="choice"> {{ choice.choice }}</input><br>
-					{% endfor %}
-				</ul>
+				<div class="box">
+					<div class="title">
+					<span>{{ poll.question }}
+					<strong class="label notice" style="margin-left: 10px"> {{poll.total_votes}} votes </strong>
+					</span>
+					</div>
+					<ul>
+						{% for choice in poll.choices %}
+						<input type="radio" name="poll_{{poll.pk}}" value="{{choice.pk}}" class="choice"> {{ choice.choice }}</input><br>
+						{% endfor %}
+					</ul>
+				</div>
 				{% endfor %}
-				<input type="submit" value="Vote" class="btn primary">
+				<div class="alert-message block-message warning">
+					{% if user.is_authenticated %}
+						{% if survey.is_expired %}
+						<a type="submit" class="btn disabled">This survey is expired</a>
+						{% else %}
+						<input type="submit" value="Vote" class="btn primary">
+						{% endif %}
+					{% else %}
+					<a href="/accounts/signin/?next=/survey/{{survey.pk}}/" class="btn secondary"> Sign In to Vote</a>
+					{% endif %}
+				</div>
 				</form>
 			</div>
 		</div>
 		<div clas="tab-pane" id="results">
-			<p> Current results:</p>
-			<div class="question">
 				{%for poll in survey.polls %}
-				<h3> {{ poll.question }}</h3>
+				<div class="box">
+					<div class="title">
+						<span >{{ poll.question }}
+						<strong class="label notice" style="margin-left: 10px"> {{poll.total_votes}} Votes</strong>
+						</span>
+					</div>
 				<ul>
 					{% for choice in poll.choices %}
-					<div>
-						<h4>{{choice.choice}}</h4>
-						<div class="vote-count">
-							<span></span><strong> {{choice.votes}}</strong>
+					<div class="choice">
+						<strong> {{choice.votes}}</strong>
+						<span >{{choice.choice}}</span>
+						<div class="chart orange stripes">
+							<span class="votechart" style="width:{{choice.percentage}}%"></span>
 						</div>
 					</div>
 					{% endfor %}
 				</ul>
+				</div>
 				{% endfor %}
-			</div>
 		</div>
 		<div clas="tab-pane" id="comments">
 			{% for c in survey.comments %}
-			<div class="comment">
-				<span><img src="{{c.user.profile.gravatar}}"></img><a href="/user/{{c.user.username}}/"> {{c.user.username}}</a></span>
-				<span> On {{c.date}}</span>
+			<blockquote>
 				<p>{{c.comment}}</p>
 				<br>
-			</div>
+				<span><a href="/user/{{c.user.username}}/"> {{c.user.username}}</a></span>
+				<span> On {{c.date}}</span>
+			</blockquote>
 			{% endfor %}
 			<form action="/survey/{{survey.pk}}/comment/" method="post">
 			{% csrf_token %}

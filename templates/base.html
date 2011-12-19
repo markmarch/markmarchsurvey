@@ -7,6 +7,7 @@
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
     <link rel="stylesheet" href="/static/bootstrap.min.css" />
     <link rel="stylesheet" href="/static/main.css" />
+    <link href='http://fonts.googleapis.com/css?family=Varela' rel='stylesheet' type='text/css'>
   </head>
   <body>
     <!-- Navagation bar -->
@@ -17,7 +18,7 @@
           {% block nav %}
           <ul class="nav">
             {% block nav-home %}<li><a href="/">Home</a></li>{% endblock %}
-            {% block nav-survey %}<li><a href="/survey/">Survey</a></li>{% endblock %}
+            {% block nav-user %}<li><a href="/user/">User</a><li>{% endblock %}
             {% block nav-about %}<li><a href="/about/">About</a></li>{% endblock %}
           </ul>
           <form class="pull-left" action="/search/">

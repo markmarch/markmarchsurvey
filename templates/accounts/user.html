@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block nav-user %}<li class="active"><a href="/user/">User</a></li>{% endblock %}
+{% block content %}
+<div class="main">
+    <div class="user-summary">
+        <img class="avatar" src="{{u.profile.gravatar}}"></img>
+        <a class="name" href="/user/{{u.username}}/">{{u.username}}</a>
+    </div>
+    <div class="survey-list">
+        <h3> {{u.username}}'s surveys:</h3>
+         {% for survey in surveys %}
+            <div class="survey-summary box">
+                <span>
+                    <a class="title" href="/survey/{{survey.pk}}/"> {{survey.name}}</a>
+                    <span class="label notice"> {{survey.num_of_questions}} questions</span>
+                </span>
+                <p style="margin-left: 10px;"> Created on<strong> {{survey.create_date}}</strong></p>
+                <blockquote> {{survey.desc}}</blockquote>
+            </div>
+            {% endfor %} 
+    </div>
+</div>
+{% endblock %}

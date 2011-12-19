@@ -18,15 +18,13 @@
 		{% else %}
 		<p>You haven't created any survey yet.</p>
 		{% endif %}
-		<a href="/survey/user/{{user.username}}">See More...</a>
+		<a href="/user/{{user.username}}">See More...</a>
 	</div>
 </div>
 {% endif %}
-	
-<div class="content">
+<div class="{% if user.is_authenticated %}content{%else%}main{%endif%}">
 	{% include "message.html" %}
-	<h3> Recent public survey</h3>
-	<hr>
+	<h4> Recent public survey</h4>
 	<div class="survey-list section">
 		{% for survey in public_surveys %}
 		<div class="survey">

@@ -1,63 +1,100 @@
 {% extends "base.html" %}
 {% block content %} 
 <div class="main">
-    {% if message %}
-    <div class="alert-message success"> {{message}} </div>
-    {% endif %}
-    <form action="/accounts/profile/" method="post"> {% csrf_token %}
-        <div style="margin:0; padding:0">
-            <p class="label notice section">Basic:</p>
-            <div class="clearfix">
-                <label>Username</label>
-                <div class="input">
-                    <input name="username" type="text" size="15" value="{{form.username.value}}" readonly>
-                </div>
+    {% include "message.html"%}
+    <ul class="tabs" data-tabs="tabs">
+        <li class="active">
+        <a href="#survey">My Surveys</a>
+        </li>
+        <li class="">
+        <a href="#friends">Friends</a>
+        </li>
+        <li class="">
+        <a href="#profile">Profile</a>
+        </li>
+    </ul>
+    <div id="survey-tab-content" class="tab-content">
+        <div class="tab-pane active" id="survey">
+            <div class="alert-message block-message info">
+                <a href="/survey/new/" class="btn primary"> Create New Survey</a>
             </div>
-            <div class="clearfix">
-                <label>Email</label>
-                <div class="input">
-                    <input name="email" type="text" size="15" value="{{form.email.value}}">
-                </div>
+            {% for survey in surveys %}
+            <div class="survey-summary box">
+                <span>
+                    <a class="title" href="/survey/{{survey.pk}}/"> {{survey.name}}</a>
+                    <span class="label notice"> {{survey.num_of_questions}} questions</span>
+                </span>
+                <p style="margin-left: 10px;"> Created on<strong> {{survey.create_date}}</strong></p>
+                <blockquote> {{survey.desc}}</blockquote>
             </div>
-
-            <div class="clearfix">
-                <label>First Name</label>
-                <div class="input">
-                    <input name="first_name" type="text" size="15" value="{{form.first_name.value}}">
-                </div>
-            </div>
-
-            <div class="clearfix">
-                <label>Last Name</label>
-                <div class="input">
-                    <input name="last_name" type="text" size="15" value="{{form.last_name.value}}">
-                </div>
-            </div>
-            <p class="label notice section">Social:</p>
-            <div class="clearfix">
-                <label>Web Site:</label>
-                <div class="input">
-                    <input name="website" type="text" size="10" value="{{ form.website.value }}">
-                </div>
-            </div>
-            <div class="clearfix">
-                <label>Twitter</label>
-                <div class="input">
-                    <input name="twitter" type="text" size="10" value="{{ form.twitter.value }}">
-                    <a href="#">Connect</a>
-                </div>
-            </div>
-            <div class="clearfix">
-                <label>Github</label>
-                <div class="input">
-                    <input name="github" type="text" size="10" value="{{ form.github.value }}">
-                    <a href="#">Connect</a>
-                </div>
-            </div>
-            <div class="actions">
-                <input class="btn btn-m primary" type="submit" value="Update" style="margin-left: 15px">
-            </div>
+            {% endfor %} 
         </div>
-    </form>
+        <div class="tab-pane" id="friends">
+            {% for friend in friends %}
+            <div class="box">
+                <img src="{{friend.profile.gravatar}}" />
+                <h4>{{friend.username}}</h4>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="tab-pane" id="profile">
+            <form action="/accounts/profile/" method="post"> {% csrf_token %}
+                <div style="margin:0; padding:0">
+                    <p class="label notice section">Basic:</p>
+                    <div class="clearfix">
+                        <label>Username</label>
+                        <div class="input">
+                            <input name="username" type="text" size="15" value="{{form.username.value}}" readonly>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <label>Email</label>
+                        <div class="input">
+                            <input name="email" type="text" size="15" value="{{form.email.value}}">
+                        </div>
+                    </div>
+
+                    <div class="clearfix">
+                        <label>First Name</label>
+                        <div class="input">
+                            <input name="first_name" type="text" size="15" value="{{form.first_name.value}}">
+                        </div>
+                    </div>
+
+                    <div class="clearfix">
+                        <label>Last Name</label>
+                        <div class="input">
+                            <input name="last_name" type="text" size="15" value="{{form.last_name.value}}">
+                        </div>
+                    </div>
+                    <p class="label notice section">Social:</p>
+                    <div class="clearfix">
+                        <label>Web Site:</label>
+                        <div class="input">
+                            <input name="website" type="text" size="10" value="{{ form.website.value }}">
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <label>Twitter</label>
+                        <div class="input">
+                            <input name="twitter" type="text" size="10" value="{{ form.twitter.value }}">
+                            <a href="#">Connect</a>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        <label>Github</label>
+                        <div class="input">
+                            <input name="github" type="text" size="10" value="{{ form.github.value }}">
+                            <a href="#">Connect</a>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <input class="btn btn-m primary" type="submit" value="Update" style="margin-left: 15px">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
