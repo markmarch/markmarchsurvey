@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     url(r'^survey/(\d+)/delete/$', delete, name='delete'),
     url(r'^survey/(\d+)/question/edit/$', edit_survey_questions, name='edit_survey_questions'),
     url(r'^survey/(\d+)/(\d+)/edit/$', edit_question, name='edit_question'),
+    url(r'^survey/(\d+)/(\d+)/delete/$', delete_question, name='delete_question'),
 )
