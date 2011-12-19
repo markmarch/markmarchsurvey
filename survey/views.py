@@ -7,6 +7,8 @@ from survey.models import *
 from survey.forms import *
 from datetime import datetime, time
 
+
+
 def home(request):
     """Home View, displays public surveys if user not logged in,
     otherwise display public and private surveys"""
@@ -21,7 +23,8 @@ def home(request):
     return render_to_response('survey/home.html', 
         {"public_surveys": public_survey},
         context_instance=RequestContext(request))
-        
+
+
 def survey(request, survey_id):
     """Survey view, list survey details"""
     survey = get_object_or_404(Survey, pk=survey_id)
@@ -69,6 +72,9 @@ def edit(request, survey_id):
                 survey.desc = cd['desc']
                 if cd['expires']:
                     survey.expire_date = cd['expire_date']
+                if cd['expires'] is False and survey.expire_date is not None:
+                    survey.expire_date = None
+                
                 survey.visibility = cd['visibility']
                 survey.save()
                 messages.success(request, 'Update sucess')
@@ -173,6 +179,20 @@ def edit_survey_questions(request, survey_id):
 
 
 @login_required(login_url='/accounts/signin/')
+def delete_question(request, survey_id, question_id):
+    """Delete a question"""
+    survey = get_object_or_404(Survey, pk=survey_id)
+    user = request.user
+    if survey.belongs_to(user):
+        poll = get_object_or_404(Poll, pk=question_id)
+        poll.delete()
+        messages.success(request, 'Question deleted')
+        return HttpResponseRedirect('/survey/' + survey_id + '/question/edit/');
+    else:
+        messages.error(request, 'Computer say no, because this is not yours')
+        return HttpResponseRedirect('/survey/' + survey_id + '/') 
+
+@login_required(login_url='/accounts/signin/')
 def comment(request, survey_id):
     """Comment on a survey"""
     user = request.user
@@ -241,17 +261,21 @@ def delete(request, survey_id):
 @login_required(login_url='/accounts/signin/')
 def vote(request, survey_id):
     """Vote on a survey"""
-    survey = Survey.objects.get(pk=survey_id)
+    survey = get_object_or_404(Survey, pk=survey_id)
+    if survey.is_expired:
+        messages.error(request, 'This survey is expired')
+        return HttpResponseRedirect('/survey/' + survey_id + '/')
+    
     user = request.user
     if request.method != 'POST':
         return render_to_response('survey/survey.html', {'survey': survey},
             context_intance=RequestContext(request))
     
     if survey is not None and survey.can_vote(user):
-        polls = Poll.objects.filter(survey__pk=survey_id)
-        for p in polls:
-            choice = Choice.objects.get(pk=request.POST[str(p.pk)])
-            p.vote(user,choice)
+        for k, v in request.POST.items():
+            if k.startswith('poll_'):
+                poll = Poll.objects.get(pk=k[5:])
+                poll.vote(user, Choice.objects.get(pk=v))
         return HttpResponseRedirect('/survey/' + str(survey_id) + '/')
     else:
         return render_to_response('survey/survey.html', {'survey': survey},
