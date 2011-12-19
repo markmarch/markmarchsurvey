@@ -59,7 +59,7 @@
                 var newNum = new Number(num + 1);
                 var newOption=$('#option_' + num).clone().attr('id', 'option_' + newNum);
                 newOption.attr('class', 'clearfix')
-                newOption.html('<label for="option_' + newNum +'">Option ' + newNum + '</label><div class="input"><input type="text" name="option_' + newNum + '"></div>');
+                newOption.html('<label for="option_' + newNum +'">Option ' + newNum + '</label><div class="input"><input type="text" name="option_' + newNum + '" class="option"></div>');
                 $('#option_' + num).after(newOption);
                 })
 </script>

@@ -77,11 +77,12 @@
         var pollId = $(this).attr('poll-id');
         var num= $('.option_' + pollId).length;
         var newNum = new Number(num + 1);
-        var newOption=$('#option_' + pollId + '_' + num).clone().attr('id', 'option_' + newNum);
+        var newOption=$('#option_' + pollId + '_' + num).clone().attr('id', 'option_' + pollId + '_' + newNum);
         newOption.attr('class', 'clearfix')
-        newOption.html('<label for="option_' + newNum +'">Option ' + newNum + '</label><div class="input"><input type="text" name="newoption_' + newNum + '"></div>');
+        newOption.html('<label for="option_' + newNum +'">Option ' + newNum + '</label><div class="input"><input type="text" name="newoption_' + newNum + '" class="option_' + pollId + '"></div>');
         $('#option_' + pollId + '_' + num).after(newOption);
         });
+        
     // hide form
     $('.cancel').bind('click', function(e){
         var pollId = $(this).attr('poll-id');
